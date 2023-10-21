@@ -83,62 +83,160 @@ This result identifies customers that fit the desired criteria and can be an ups
 
 -- Challenge 5
 Select userid,
-    SUM(CASE
-        WHEN eventid = 1 THEN 1
-        ELSE 0
-        END) AS ViewedHelpCenterPage,
-    SUM(CASE
-        WHEN eventid = 2 THEN 1
-        ELSE 0
-        END) AS ClickedFAQs,
-    SUM(CASE
-        WHEN eventid = 3 THEN 1
-        ELSE 0
-        END) AS ClickedContactSupport,
-    SUM(CASE
-        WHEN eventid = 4 THEN 1
-        ELSE 0
-        END) AS SubmittedTicket
-From FrontendEventLog
-WHERE eventid in (1,2,3,4)
-GROUP BY userid;
+    SUM(CASE WHEN log.eventid = 1 THEN 1 ELSE 0 END) AS ViewedHelpCenterPage,
+    SUM(CASE WHEN log.eventid = 2 THEN 1 ELSE 0 END) AS ClickedFAQs,
+    SUM(CASE WHEN log.eventid = 3 THEN 1 ELSE 0 END) AS ClickedContactSupport,
+    SUM(CASE WHEN log.eventid = 4 THEN 1 ELSE 0 END) AS SubmittedTicket
+FROM
+	Frontendeventlog log
+JOIN
+	frontendeventdefinitions def
+	ON log.eventid = def.eventid
+WHERE
+	eventtype = 'Customer Support'
+GROUP BY
+	userid;
 
 /*
 This result provides insight on how manny times a certain user perfored a specific action.
 */
 
 -- Challenge 6
+With all_subscriptions as(
+	SELECT expirationdate
+	FROM SubscriptionsProduct1
+	WHERE active = 1 
+
+	UNION ALL
+    -- Union all can be used since the products are different and there will be no duplicates
+
+	SELECT expirationdate
+	FROM SubscriptionsProduct2
+	WHERE active = 1
+
+
+)
+-- the code below was provided to focus on UNION
+select
+	date_trunc('year', expirationdate) as exp_year, 
+	count(*) as subscriptions
+from 
+	all_subscriptions
+group by 
+	date_trunc('year', expirationdate)
+
 
 /*
-Takeaway
+Union all allows us to pull the customer data from the two different databases and perform one query.
 */
 
 -- Challenge 7
+with all_cancelation_reasons as(
+    select SUBSCRIPTIONID, cancelationreason1 as cancelationreason
+    from cancelations
+
+    UNION
+    -- union is safer in this scenario just in case a user reported the same answer or null multiple times
+
+    select SUBSCRIPTIONID, cancelationreason2 as cancelationreason
+    from cancelations
+
+    UNION 
+
+    select SUBSCRIPTIONID, cancelationreason3 as cancelationreason
+    from cancelations
+)
+-- the code below was provided to focus on UNION
+select 
+    cast(count( 
+        case when cancelationreason = 'Expensive' 
+        then subscriptionid end) as float)
+    /count(distinct subscriptionid) as percent_expensive
+from    
+    all_cancelation_reasons;
 
 /*
-Takeaway
+50%, or half, of the users who canceled their subscriptions reasoned that it was because it was too expensive.
 */
 
 -- Challenge 8
 
-/*
-Takeaway
-*/
+select e.employeeid,
+    e.name as employee_name,
+    manager.name as manager_name,
+    case
+        when manager.name is null then e.email
+        else manager.email 
+        end as contact_email
+	-- coalesce(manager.email, e.email) as contact_email
+    -- course provided coalesce() as an althernate solution
+from employees e
+left join employees manager
+on e.managerid = manager.employeeid
+where e.department = 'Sales';
 
 -- Challenge 9
+with monthly_revenue as( -- the monthly revenue cte was provided
+    select 
+        date_trunc('month', orderdate) as order_month, 
+        sum(revenue) as monthly_revenue
+    from 
+        subscriptions
+    group by 
+        date_trunc('month', orderdate)
+        )
+
+select current.order_month as current_month,
+    previous.order_month as previous_month,
+    current.monthly_revenue as current_revenue,
+    previous.monthly_revenue as previous_revenue
+from
+	monthly_revenue current
+join
+	monthly_revenue previous
+where
+	datediff('month', previous.order_month, current.order_month) = 1
+	AND
+	current.monthly_revenue > previous.monthly_revenue;
 
 /*
-Takeaway
+This reports identifies July and October as months where the revenue was higher than the previous month.
 */
 
 -- Challenge 10
+WITH sale_ranks AS (
+	SELECT
+		salesemployeeid,
+		saleamount,
+		saledate,
+		row_number() OVER(partition by salesemployeeid order by saledate desc) as most_recent_sale
+	FROM
+		sale
+)
+SELECT
+	*
+FROM
+	sale_ranks
+WHERE most_recent_sale = 1
 
 /*
-Takeaway
+The report keeps track of each employee's sale quota over time with a running total and percentage of their quota reached.
+This data better visualizes the performance of each employee as they make a sale.
 */
 
 -- Challenge 11
+SELECT
+    StatusMovementID,
+    SubscriptionID,
+    StatusID,
+    MovementDate,
+    lead(MovementDate, 1) OVER (partition by SubscriptionID order by MovementDate) as nextstatusmovementdate,
+    lead(MovementDate, 1) OVER (partition by SubscriptionID order by MovementDate) - MovementDate AS timeinstatus
+FROM
+    PaymentStatusLog
+WHERE
+    subscriptionid = 38844
 
 /*
-Takeaway
+This report provides insight on the time difference between payment steps and can identify if and where any issues occured.
 */
