@@ -9,7 +9,11 @@ The following concepts were practiced in SQL during this course:
 * Window Functions, such as 
 
 ## Challenge 1: Pull descriptive statistics with a CTE
-
+Business Problem: Calculating descriptive statistics for monthly revenue by product
+Task: For the year 2022, provide a report that answers the following questiosn:
+1. How much revenue does each product usually generate each month?
+2. Which product had the most success throughout all of last year
+3. Did either product fluctuate greatly each month or was the month-to-month trend fairly consistent?
 
 ## Challenge 2: Explore variable distributions with CTEs
 
@@ -36,3 +40,4 @@ The following concepts were practiced in SQL during this course:
 * Task: Pull payment funnel data for user 38844
 
 ## The Schemas
+<span class="image main"><img src="https://www.codingame.com/work/servlet/fileservlet?id=57963837776032" alt="" /></span>
