@@ -34,23 +34,33 @@ Task: Provide a report that identifies potential customers that present as poten
 Task: Provide a report that tracks user actvity to identify whether new design changes postively or negatively impact the customer support page
 
 ## Challenge 6: Combine product tables using UNION
+### Combining 2 Product Tables into 1
+Task: From the two product tables, find the number of active subscriptions that will expire in each year.
 
 ## Challenge 7: Unpivoting columns into rows using UNION
+### Analyzing Subscription Cacncelation Reasons
+Task: Find the percentage of canceled subcriptions that reported "Expensive" as one of their cancelation reasons.
 
 ## Challenge 8: Exmployee-manager data with a self join
+### Pulling employee/manager data with a self join
+Task: Provide an email list for the Sales department such that each employee's manager will get an email. If the employee does not have a manager, their email can be included in the email list directly.
 
 ## Challenge 9: Comparing rows within the same table
+### Comparing Month-over-Month (MoM) Revenue
+Task: Provide a report that highlights months where the revenue was up from the previous month.
 
 ## Chalenge 10: Get running totals with window functions
 ### Tracking Sales Quota Progress Over Time
-* Find the running total of sales revenue, running total, and percent quota for each sales employee on each date that they make a sale.
+Task: Find the running total of sales revenue, running total, and percent quota for each sales employee on each date that they make a sale.
 
 ## Challenge 11: Timstamp differences with LEAD()
 ### Tracking User Payment Funnel Times with LEAD ()
-* Task: Pull payment funnel data for user 38844
+Task: For the user 38844, pull their payment funnel data to investigate the time it takes to complete the steps in their payment process.
 
 ## The Data
 <span class="image main"><img src="https://www.codingame.com/work/servlet/fileservlet?id=57963837776032" alt="" /></span>
+
+<span class="image main"><img src="https://www.codingame.com/work/servlet/fileservlet?id=57965554724304" alt="" /></span>
 
 ## Subscription Payment Funnel Stages
 <span class="image main"><img src="https://www.codingame.com/work/servlet/fileservlet?id=57963977632205" alt="" /></span>
