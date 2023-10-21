@@ -98,7 +98,7 @@ GROUP BY
 	userid;
 
 /*
-This result provides insight on how manny times a certain user perfored a specific action.
+This result provides insight on how many times a certain user performed a specific action.
 */
 
 -- Challenge 6
@@ -168,8 +168,8 @@ select e.employeeid,
         when manager.name is null then e.email
         else manager.email 
         end as contact_email
+    -- course provided coalesce() as an althernate solution:
 	-- coalesce(manager.email, e.email) as contact_email
-    -- course provided coalesce() as an althernate solution
 from employees e
 left join employees manager
 on e.managerid = manager.employeeid
@@ -200,7 +200,7 @@ where
 	current.monthly_revenue > previous.monthly_revenue;
 
 /*
-This reports identifies July and October as months where the revenue was higher than the previous month.
+This report identifies July and October as months where the revenue was higher than the previous month.
 */
 
 -- Challenge 10
